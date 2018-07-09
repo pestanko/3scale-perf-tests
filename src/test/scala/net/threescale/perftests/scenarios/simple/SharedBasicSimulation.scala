@@ -9,6 +9,7 @@ import io.gatling.http.request.builder.HttpRequestBuilder.toActionBuilder
 import net.threescale.perftests.entities.Api
 
 import scala.concurrent.duration._
+import scala.util.Random
 
 
 abstract class SharedBasicSimulation extends SimulationBase {
@@ -41,29 +42,38 @@ abstract class SharedBasicSimulation extends SimulationBase {
     httpProtocolBuilder
   }
 
+  private val randomSubString: String = Random.alphanumeric.take(20).mkString
+
+
   /**
     * Creates the scenario builder used in the simulation.
     */
   def createScenarioBuilder(): ScenarioBuilder = {
+    val stringFeeder = Iterator.continually(Map("param" -> randomSubString))
     val scenarioBuilder = scenario("Scenario: " + getClass.getSimpleName)
+      .feed(stringFeeder)
       .exec(
         http("GET request")
           .get("/get")
+          .queryParam("param", "${param}")
           .addApiAuthParams(api)
       )
       .exec(
         http("POST request")
           .post("/post")
+          .queryParam("param", "${param}")
           .addApiAuthParams(api)
       )
       .exec(
         http("PUT request")
           .put("/put")
+          .queryParam("param", "${param}")
           .addApiAuthParams(api)
       )
       .exec(
         http("DELETE request")
           .delete("/delete")
+          .queryParam("param", "${param}")
           .addApiAuthParams(api)
       )
     scenarioBuilder
