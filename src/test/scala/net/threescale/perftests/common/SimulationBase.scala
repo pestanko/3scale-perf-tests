@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import net.threescale.perftests.entities.Api
 
-class BaseSimulation extends Simulation {
+abstract class SimulationBase extends Simulation {
 
 
   /**
